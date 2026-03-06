@@ -11,6 +11,7 @@ import os
 TMDB_API_KEY    = st.secrets.get("TMDB_API_KEY", "620b231f411093a0f74352c5530d184a")
 GEMINI_API_KEY  = st.secrets.get("GEMINI_API_KEY", "")
 VU_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "films_vus.json")
+AVOIR_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "films_avoir.json")
 
 st.set_page_config(
     page_title="Cinémathèque Mr Marc",
@@ -314,6 +315,37 @@ def vu_ids():
     return set(vu_charger().keys())
 
 # ─────────────────────────────────────────────
+#  FILMS À VOIR — stockage JSON local
+# ─────────────────────────────────────────────
+def avoir_charger():
+    try:
+        with open(AVOIR_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return {}
+
+def avoir_sauver(data):
+    try:
+        with open(AVOIR_FILE, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+        return True
+    except Exception:
+        return False
+
+def avoir_ajouter(film_id, titre, annee):
+    data = avoir_charger()
+    data[str(film_id)] = {"titre": titre, "annee": annee, "date": datetime.now().strftime("%d/%m/%Y")}
+    return avoir_sauver(data)
+
+def avoir_retirer(film_id):
+    data = avoir_charger()
+    data.pop(str(film_id), None)
+    return avoir_sauver(data)
+
+def avoir_ids():
+    return set(avoir_charger().keys())
+
+# ─────────────────────────────────────────────
 #  API TMDB — PARALLÈLE
 # ─────────────────────────────────────────────
 @st.cache_data(ttl=1800, show_spinner=False)
@@ -566,20 +598,35 @@ def afficher_detail(film_id):
             st.markdown('<p class="section-lbl">Bande-annonce</p>', unsafe_allow_html=True)
             st.video(f"https://www.youtube.com/watch?v={trailer['key']}")
 
-        # Bouton VU
+        # Boutons VU + À VOIR
         vus = vu_ids()
+        avoirs = avoir_ids()
         deja_vu = str(film_id) in vus
-        st.markdown('<p class="section-lbl">Mon avis</p>', unsafe_allow_html=True)
-        if deja_vu:
-            st.success(f"✅ Vu le {vu_charger()[str(film_id)].get('date','')}")
-            if st.button("↩️ Retirer des films vus", key=f"retirer_{film_id}"):
-                vu_retirer(film_id)
-                st.rerun()
-        else:
-            if st.button("👁 Marquer comme VU", key=f"vu_{film_id}", type="primary"):
-                vu_ajouter(film_id, d.get("title",""), annee)
-                st.success("✅ Film marqué comme vu !")
-                st.rerun()
+        deja_avoir = str(film_id) in avoirs
+        st.markdown('<p class="section-lbl">Mon suivi</p>', unsafe_allow_html=True)
+        col_vu, col_avoir = st.columns(2)
+        with col_vu:
+            if deja_vu:
+                st.success(f"✅ Vu le {vu_charger()[str(film_id)].get('date','')}")
+                if st.button("↩️ Retirer des vus", key=f"retirer_{film_id}"):
+                    vu_retirer(film_id)
+                    st.rerun()
+            else:
+                if st.button("👁 Marquer comme VU", key=f"vu_{film_id}", use_container_width=True):
+                    vu_ajouter(film_id, d.get("title",""), annee)
+                    # Retirer de À VOIR si présent
+                    avoir_retirer(film_id)
+                    st.rerun()
+        with col_avoir:
+            if deja_avoir:
+                st.info(f"🔖 Ajouté le {avoir_charger()[str(film_id)].get('date','')}")
+                if st.button("↩️ Retirer de À voir", key=f"retirer_avoir_{film_id}"):
+                    avoir_retirer(film_id)
+                    st.rerun()
+            elif not deja_vu:
+                if st.button("🔖 À VOIR", key=f"avoir_{film_id}", use_container_width=True):
+                    avoir_ajouter(film_id, d.get("title",""), annee)
+                    st.rerun()
 
 # ─────────────────────────────────────────────
 #  SIDEBAR
@@ -634,6 +681,7 @@ with st.sidebar:
     lancer = st.button("🚀 Lancer la recherche", use_container_width=True, key="btn_lancer")
 
     masquer_vus = st.toggle("🙈 Masquer les films déjà vus", value=False)
+    montrer_avoir = st.toggle("🔖 Uniquement mes À VOIR", value=False)
 
     st.divider()
     st.markdown('<p class="sb-lbl">📺 Mes plateformes</p>', unsafe_allow_html=True)
@@ -728,40 +776,10 @@ with tab_recherche:
                 for j, film in enumerate(films[i:i+4]):
                     with cols[j]:
                         fid = film['id']
-                        # Bouton caché, déclenché par clic sur la carte via JS
-                        clicked = st.button("", key=f"btn_{fid}", use_container_width=True)
-                        if clicked:
+                        st.markdown(carte_html(film), unsafe_allow_html=True)
+                        if st.button("ℹ️ Détails", key=f"btn_{fid}", use_container_width=True):
                             st.session_state.film_detail = fid
                             st.rerun()
-                        # Carte HTML avec JS qui clique le bouton invisible
-                        poster = film.get('poster_path')
-                        titre_f = film.get('title','')
-                        note_f = film.get('vote_average', 0)
-                        annee_f = film.get('release_date','')[:4] or '—'
-                        offres_f = film.get('offres', [])
-                        chips = ''.join(f'<span class="platform-chip">{o}</span>' for o in offres_f)
-                        img_tag = f'<img class="film-poster" src="https://image.tmdb.org/t/p/w400{poster}" style="width:100%;border-radius:10px;display:block;" loading="lazy">' if poster else '<div style="height:220px;background:#1a1a2e;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:2rem;">🎬</div>'
-                        st.markdown(f'''
-                        <div onclick="
-                            var btns = window.parent.document.querySelectorAll('button');
-                            for(var b of btns){{
-                                if(b.getAttribute('data-testid')==='stBaseButton-secondary' && b.innerText.trim()===''){{
-                                    var rect = b.getBoundingClientRect();
-                                    if(rect.width > 0) {{ b.click(); break; }}
-                                }}
-                            }}
-                        " style="cursor:pointer;">
-                        <div class="film-card" style="margin-bottom:0;">
-                            {img_tag}
-                            <div class="film-info">
-                                <p class="film-title">{titre_f}</p>
-                                <div class="film-meta">
-                                    <span class="note-badge">★ {note_f:.1f}</span>
-                                    <span class="annee-badge">{annee_f}</span>
-                                </div>
-                                <div class="platform-chips">{chips}</div>
-                            </div>
-                        </div></div>''', unsafe_allow_html=True)
 
     elif lancer:
         st.markdown("""
