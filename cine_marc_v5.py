@@ -98,6 +98,40 @@ p,span,div,label,button { font-family: 'DM Sans', sans-serif !important; }
 }
 .platform-chips { flex-wrap:wrap; display:flex; margin-top:4px; }
 
+/* ── Search bar ── */
+.search-wrap {
+    background: linear-gradient(135deg, #12111e, #161526);
+    border: 1px solid #2a2540; border-radius: 14px;
+    padding: 20px 24px; margin-bottom: 24px;
+}
+.search-title {
+    font-family: 'Playfair Display', serif; font-size: 1.1rem;
+    color: #d4af37; margin-bottom: 10px;
+}
+
+/* ── Résultat recherche par nom ── */
+.search-result-card {
+    background: linear-gradient(145deg, #12111e, #181626);
+    border: 1px solid #22203a; border-radius: 12px;
+    padding: 16px; margin-bottom: 12px;
+    display: flex; gap: 16px; align-items: flex-start;
+    transition: border-color .2s;
+}
+.search-result-card:hover { border-color: #3a3428; }
+.search-result-poster {
+    width: 60px; min-width: 60px; border-radius: 6px; object-fit: cover;
+}
+.search-result-ph {
+    width: 60px; min-width: 60px; height: 90px; border-radius: 6px;
+    background: #161524; display: flex; align-items: center;
+    justify-content: center; font-size: 1.5rem; color: #22203a;
+}
+.search-result-info { flex: 1; }
+.search-result-title {
+    font-family: 'Playfair Display', serif; font-size: 1rem;
+    color: #e8e0d0; margin: 0 0 6px;
+}
+
 /* ── Détail film ── */
 .detail-wrap {
     background: linear-gradient(145deg,#12111e,#0f0e1a);
@@ -114,9 +148,15 @@ p,span,div,label,button { font-family: 'DM Sans', sans-serif !important; }
     font-size:.7rem; text-transform:uppercase; letter-spacing:2.5px;
     color:#3a3428; margin:16px 0 8px;
 }
-.award-badge {
-    display:inline-block; background:rgba(212,175,55,.08); border:1px solid rgba(212,175,55,.2);
-    color:#d4af37; font-size:.75rem; padding:3px 10px; border-radius:20px; margin:2px 2px 0 0;
+
+/* ── À VOIR liste ── */
+.avoir-card {
+    background: linear-gradient(145deg, #12111e, #181626);
+    border: 1px solid #22203a; border-radius: 12px; overflow: hidden;
+    transition: transform .2s, border-color .2s;
+}
+.avoir-card:hover {
+    transform: translateY(-4px); border-color: #3a3428;
 }
 
 /* ── Humeur / AI ── */
@@ -145,33 +185,6 @@ p,span,div,label,button { font-family: 'DM Sans', sans-serif !important; }
 }
 .result-bar strong { color:#d4af37; }
 
-/* ── Bouton principal ── */
-/* Bouton LANCER uniquement - ciblé par key */
-div[data-testid="stSidebar"] button[kind="secondary"][data-testid="stBaseButton-secondary"]:has(+ *) { }
-[data-testid="stSidebar"] [key="btn_lancer"] button,
-div[data-testid="stSidebar"] div.stButton:has(button#btn_lancer) button,
-div[data-testid="stSidebar"] div.element-container:last-of-type div.stButton > button {
-    background: linear-gradient(135deg,#c0392b,#e74c3c) !important;
-    color: #fff !important; font-size: 1rem !important; font-weight: 700 !important;
-    min-height: 56px !important; letter-spacing: 2px !important;
-    border: none !important; text-transform: uppercase !important;
-}
-/* Genre buttons - style neutre */
-[data-testid="stSidebar"] [data-testid="stBaseButton-secondary"],
-[data-testid="stSidebar"] [data-testid="stBaseButton-primary"] {
-    font-size: .62rem !important; padding: 1px 2px !important;
-    min-height: 22px !important; line-height: 1 !important;
-    border-radius: 4px !important; white-space: nowrap !important;
-    overflow: hidden !important; text-overflow: ellipsis !important;
-}
-/* Bouton LANCER - rouge, grand */
-[data-testid="stSidebar"] [data-testid="stBaseButton-secondaryFormSubmit"],
-div[data-testid="stSidebar"] > div > div > div > div:last-child div.stButton > button {
-    background: linear-gradient(135deg,#c0392b,#e74c3c) !important;
-    color:#fff !important; font-size:1.1rem !important; font-weight:700 !important;
-    min-height:60px !important; letter-spacing:2px !important;
-}
-
 /* ── Inputs texte ── */
 [data-testid="stTextInput"] input, [data-testid="stTextArea"] textarea {
     background:#12111e !important; border:1px solid #22203a !important;
@@ -187,6 +200,7 @@ div[data-testid="stSidebar"] > div > div > div > div:last-child div.stButton > b
 
 /* ── Sidebar labels ── */
 .sb-lbl { font-size:.62rem; text-transform:uppercase; letter-spacing:1.5px; color:#3a3428; margin:6px 0 3px; }
+
 /* Bouton play sous jaquette - discret */
 div[data-testid="stMain"] div.stButton > button {
     background: rgba(212,175,55,0.15) !important;
@@ -200,6 +214,7 @@ div[data-testid="stMain"] div.stButton > button:hover {
     background: rgba(212,175,55,0.35) !important;
     cursor: pointer !important;
 }
+
 /* Boutons genre */
 [data-testid="stSidebar"] [data-testid="stBaseButton-secondary"] {
     background: #12111e !important; border: 1px solid #2a2535 !important;
@@ -224,7 +239,6 @@ div[data-testid="stMain"] div.stButton > button:hover {
 [data-testid="stSidebarCollapseButton"] { display:none !important; }
 section[data-testid="stSidebar"] { padding-top: 0.5rem !important; }
 section[data-testid="stSidebar"] > div { padding-top: 0.3rem !important; }
-/* Compacter les éléments sidebar */
 [data-testid="stSidebar"] .stMarkdown p { margin: 0 !important; padding: 0 !important; }
 [data-testid="stSidebar"] .element-container { margin-bottom: 0 !important; }
 [data-testid="stSidebar"] [data-testid="stVerticalBlockBorderWrapper"] { gap: 0 !important; }
@@ -240,26 +254,12 @@ MES_PLATEFORMES = {
     "Max": 1899, "Arte": 234, "France TV": 312, "MyTF1 Max": 1870,
     "6play Max": 1866, "OCS": 56, "UniversCiné": 310,
 }
-# Genres triés alphabétiquement, sans "Tous" (multiselect gère ça)
 GENRES = {
-    "Action": 28,
-    "Animation": 16,
-    "Aventure": 12,
-    "Comédie": 35,
-    "Crime": 80,
-    "Documentaire": 99,
-    "Drame": 18,
-    "Familial": 10751,
-    "Fantastique": 14,
-    "Guerre": 10752,
-    "Histoire": 36,
-    "Horreur": 27,
-    "Musique": 10402,
-    "Mystère": 9648,
-    "Romance": 10749,
-    "Science-Fiction": 878,
-    "Thriller": 53,
-    "Western": 37,
+    "Action": 28, "Animation": 16, "Aventure": 12, "Comédie": 35,
+    "Crime": 80, "Documentaire": 99, "Drame": 18, "Familial": 10751,
+    "Fantastique": 14, "Guerre": 10752, "Histoire": 36, "Horreur": 27,
+    "Musique": 10402, "Mystère": 9648, "Romance": 10749,
+    "Science-Fiction": 878, "Thriller": 53, "Western": 37,
 }
 COLLECTIONS = {
     "🌟 Standard": "none", "🏆 Oscars & Primés": "awards",
@@ -346,7 +346,7 @@ def avoir_ids():
     return set(avoir_charger().keys())
 
 # ─────────────────────────────────────────────
-#  API TMDB — PARALLÈLE
+#  API TMDB
 # ─────────────────────────────────────────────
 @st.cache_data(ttl=1800, show_spinner=False)
 def rechercher_films(genre_ids, provider_id, col_key, annee_min, note_mini, tri, page=1):
@@ -372,7 +372,25 @@ def rechercher_films(genre_ids, provider_id, col_key, annee_min, note_mini, tri,
     except Exception:
         return []
 
-# Correspondance noms JustWatch → noms affichés dans l'app
+@st.cache_data(ttl=600, show_spinner=False)
+def rechercher_par_nom(query: str):
+    """Recherche TMDB par titre — retourne les 10 premiers résultats."""
+    if not query or len(query.strip()) < 2:
+        return []
+    try:
+        params = {
+            "api_key": TMDB_API_KEY,
+            "language": "fr-FR",
+            "query": query.strip(),
+            "include_adult": False,
+            "page": 1,
+        }
+        r = requests.get("https://api.themoviedb.org/3/search/movie", params=params, timeout=6)
+        r.raise_for_status()
+        return r.json().get("results", [])[:10]
+    except Exception:
+        return []
+
 JW_NOMS = {
     "Netflix": "Netflix",
     "Amazon Prime Video": "Amazon Prime",
@@ -402,7 +420,6 @@ JW_NOMS = {
 
 @st.cache_data(ttl=3600, show_spinner=False)
 def get_plateformes_tmdb(movie_id):
-    """Source 1 : TMDB watch/providers FR"""
     try:
         url = f"https://api.themoviedb.org/3/movie/{movie_id}/watch/providers?api_key={TMDB_API_KEY}"
         data = requests.get(url, timeout=4).json()
@@ -413,7 +430,6 @@ def get_plateformes_tmdb(movie_id):
 
 @st.cache_data(ttl=3600, show_spinner=False)
 def get_plateformes_justwatch(titre: str, annee: str) -> list:
-    """Source 2 : JustWatch FR via simplejustwatchapi"""
     try:
         from simplejustwatchapi.justwatch import search
         resultats = search(titre, "FR", "fr", 3, True)
@@ -437,7 +453,6 @@ def get_plateformes_justwatch(titre: str, annee: str) -> list:
 
 @st.cache_data(ttl=3600, show_spinner=False)
 def get_plateformes(movie_id, titre="", annee=""):
-    """Double check TMDB + JustWatch — union des deux sources"""
     tmdb = get_plateformes_tmdb(movie_id)
     jw   = get_plateformes_justwatch(titre, annee) if titre else []
     union = list(dict.fromkeys(tmdb + [p for p in jw if p not in tmdb]))
@@ -452,7 +467,6 @@ def get_details(movie_id):
         return {}
 
 def enrichir_parallel(films_brut, max_films=20):
-    """Appels watch/providers en parallèle TMDB + JustWatch — double check."""
     def _fetch(film):
         titre = film.get("title", "")
         annee = film.get("release_date", "")[:4]
@@ -553,7 +567,6 @@ def afficher_detail(film_id):
         if d.get("tagline"):
             st.markdown(f'<p class="detail-tagline">« {d["tagline"]} »</p>', unsafe_allow_html=True)
 
-        # Méta
         annee  = d.get("release_date","")[:4] or "—"
         duree  = d.get("runtime", 0)
         note   = d.get("vote_average", 0)
@@ -567,31 +580,26 @@ def afficher_detail(film_id):
             f'<span class="annee-badge">👥 {votes:,} votes</span>'
             f'</div>', unsafe_allow_html=True)
 
-        # Genres
         genres = [g["name"] for g in d.get("genres", [])]
         if genres:
             st.markdown('<p class="section-lbl">Genres</p>', unsafe_allow_html=True)
             st.markdown("".join(f'<span class="cast-chip">{g}</span>' for g in genres), unsafe_allow_html=True)
 
-        # Synopsis
         if d.get("overview"):
             st.markdown('<p class="section-lbl">Synopsis</p>', unsafe_allow_html=True)
             st.markdown(f'<p class="synopsis">{d["overview"]}</p>', unsafe_allow_html=True)
 
-        # Réalisateur
         crew  = d.get("credits", {}).get("crew", [])
         reals = [c["name"] for c in crew if c.get("job") == "Director"]
         if reals:
             st.markdown('<p class="section-lbl">Réalisateur</p>', unsafe_allow_html=True)
             st.markdown("".join(f'<span class="cast-chip">🎬 {r}</span>' for r in reals[:2]), unsafe_allow_html=True)
 
-        # Casting
         cast = d.get("credits", {}).get("cast", [])[:6]
         if cast:
             st.markdown('<p class="section-lbl">Avec</p>', unsafe_allow_html=True)
             st.markdown("".join(f'<span class="cast-chip">{a["name"]}</span>' for a in cast), unsafe_allow_html=True)
 
-        # Trailer YouTube
         videos = d.get("videos", {}).get("results", [])
         trailer = next((v for v in videos if v.get("type") == "Trailer" and v.get("site") == "YouTube"), None)
         if trailer:
@@ -614,7 +622,6 @@ def afficher_detail(film_id):
             else:
                 if st.button("👁 Marquer comme VU", key=f"vu_{film_id}", use_container_width=True):
                     vu_ajouter(film_id, d.get("title",""), annee)
-                    # Retirer de À VOIR si présent
                     avoir_retirer(film_id)
                     st.rerun()
         with col_avoir:
@@ -649,7 +656,6 @@ with st.sidebar:
     for i, g in enumerate(genre_list):
         with cols[i % 2]:
             actif = g in st.session_state.genres_choisis
-            label = f"**{g}**" if actif else g
             if st.button(g, key=f"g_{g}", use_container_width=True,
                         type="primary" if actif else "secondary"):
                 if actif:
@@ -659,10 +665,7 @@ with st.sidebar:
                 st.rerun()
 
     genres_choisis = st.session_state.genres_choisis
-    if not genres_choisis:
-        genre_ids = None
-    else:
-        genre_ids = ",".join(str(GENRES[g]) for g in genres_choisis)
+    genre_ids = ",".join(str(GENRES[g]) for g in genres_choisis) if genres_choisis else None
 
     st.markdown('<p class="sb-lbl">Collection</p>', unsafe_allow_html=True)
     choix_c = st.selectbox("Collection", list(COLLECTIONS.keys()), label_visibility="collapsed")
@@ -676,12 +679,11 @@ with st.sidebar:
     st.markdown('<p class="sb-lbl">Année minimum</p>', unsafe_allow_html=True)
     annee_min = st.slider("Année minimum", 1930, 2025, 2010, label_visibility="collapsed")
 
-    note_mini = 8.0  # Note minimum fixée à 8/10
+    note_mini = 8.0
 
     lancer = st.button("🚀 Lancer la recherche", use_container_width=True, key="btn_lancer")
 
     masquer_vus = st.toggle("🙈 Masquer les films déjà vus", value=False)
-    montrer_avoir = st.toggle("🔖 Uniquement mes À VOIR", value=False)
 
     st.divider()
     st.markdown('<p class="sb-lbl">📺 Mes plateformes</p>', unsafe_allow_html=True)
@@ -692,7 +694,6 @@ with st.sidebar:
         label_visibility="collapsed",
         placeholder="Choisir des plateformes…"
     )
-    # Construire la liste d'IDs pour l'API
     if not plat_coches or len(plat_coches) == len(MES_PLATEFORMES):
         provider_id = None
     else:
@@ -703,10 +704,9 @@ with st.sidebar:
 # ─────────────────────────────────────────────
 #  ÉTAT SESSION
 # ─────────────────────────────────────────────
-if "films_ok" not in st.session_state:
-    st.session_state.films_ok = []
-if "film_detail" not in st.session_state:
-    st.session_state.film_detail = None
+for key in ["films_ok", "film_detail", "search_query", "search_results", "search_detail"]:
+    if key not in st.session_state:
+        st.session_state[key] = [] if key in ("films_ok", "search_results") else None
 
 # ─────────────────────────────────────────────
 #  ZONE PRINCIPALE
@@ -714,14 +714,16 @@ if "film_detail" not in st.session_state:
 st.markdown('<p class="hero-title">La Cinémathèque</p>', unsafe_allow_html=True)
 st.markdown('<p class="hero-sub">Sélection personnelle · Mr Marc</p>', unsafe_allow_html=True)
 
-tab_recherche, tab_humeur, tab_journal = st.tabs([
+tab_recherche, tab_nom, tab_humeur, tab_avoir, tab_journal = st.tabs([
     "🔍  Recherche",
+    "🔎  Chercher un film",
     "🎭  Humeur du soir",
-    "📖  Mon Journal",
+    "🔖  À Voir",
+    "📖  Films Vus",
 ])
 
 # ══════════════════════════════════════════════
-#  TAB 1 — RECHERCHE
+#  TAB 1 — RECHERCHE PAR CRITÈRES
 # ══════════════════════════════════════════════
 with tab_recherche:
 
@@ -729,12 +731,10 @@ with tab_recherche:
         with st.spinner("Double vérification TMDB + JustWatch en cours…"):
             brut  = rechercher_films(genre_ids, provider_id, col_key, annee_min, note_mini, tri_val, page=1)
             brut += rechercher_films(genre_ids, provider_id, col_key, annee_min, note_mini, tri_val, page=2)
-            # Dédoublonnage
             seen, brut_u = set(), []
             for f in brut:
                 if f["id"] not in seen:
                     seen.add(f["id"]); brut_u.append(f)
-            # Enrichissement PARALLÈLE
             st.session_state.films_ok = enrichir_parallel(brut_u, max_films=20)
             st.session_state.film_detail = None
 
@@ -753,13 +753,14 @@ with tab_recherche:
         </div>""", unsafe_allow_html=True)
 
     elif films:
-        nb = len(films)
+        vus = vu_ids()
+        films_affiches = [f for f in films if str(f["id"]) not in vus] if masquer_vus else films
+        nb = len(films_affiches)
         st.markdown(
             f'<p class="result-bar"><strong>{nb} film{"s" if nb>1 else ""}</strong> — '
             f'{", ".join(genres_choisis) if genres_choisis else "Tous genres"} · {choix_c} · depuis {annee_min} · note ≥ {note_mini} · {choix_tri}</p>',
             unsafe_allow_html=True)
 
-        # Détail d'un film sélectionné
         if st.session_state.film_detail:
             fid = st.session_state.film_detail
             with st.container():
@@ -770,10 +771,9 @@ with tab_recherche:
                 afficher_detail(fid)
                 st.markdown('</div>', unsafe_allow_html=True)
         else:
-            # Grille 4 colonnes
-            for i in range(0, len(films), 4):
+            for i in range(0, len(films_affiches), 4):
                 cols = st.columns(4, gap="medium")
-                for j, film in enumerate(films[i:i+4]):
+                for j, film in enumerate(films_affiches[i:i+4]):
                     with cols[j]:
                         fid = film['id']
                         st.markdown(carte_html(film), unsafe_allow_html=True)
@@ -791,7 +791,136 @@ with tab_recherche:
         </div>""", unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════
-#  TAB 2 — HUMEUR DU SOIR
+#  TAB 2 — RECHERCHE PAR NOM
+# ══════════════════════════════════════════════
+with tab_nom:
+    st.markdown('<p style="font-family:\'Playfair Display\',serif;font-size:1.5rem;color:#e8e0d0;margin-bottom:.4rem;">Rechercher un film par titre</p>', unsafe_allow_html=True)
+    st.markdown('<p style="color:#4a4438;font-size:.9rem;margin-bottom:1.2rem;">Tapez un titre en français ou en anglais — TMDB cherche dans sa base mondiale.</p>', unsafe_allow_html=True)
+
+    col_input, col_btn = st.columns([4, 1])
+    with col_input:
+        query = st.text_input(
+            "Titre du film",
+            placeholder="Ex : Parasite, Le Fabuleux Destin…, Inception…",
+            label_visibility="collapsed",
+            key="search_input"
+        )
+    with col_btn:
+        chercher = st.button("🔍 Chercher", use_container_width=True)
+
+    # Lancement recherche
+    if chercher and query:
+        with st.spinner("Recherche en cours…"):
+            st.session_state.search_results = rechercher_par_nom(query)
+            st.session_state.search_query = query
+            st.session_state.search_detail = None
+
+    # Affichage du détail d'un résultat
+    if st.session_state.search_detail:
+        fid = st.session_state.search_detail
+        st.markdown('<div class="detail-wrap">', unsafe_allow_html=True)
+        if st.button("← Retour aux résultats", key="back_search"):
+            st.session_state.search_detail = None
+            st.rerun()
+        afficher_detail(fid)
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    # Liste des résultats
+    elif st.session_state.search_results:
+        resultats = st.session_state.search_results
+        q = st.session_state.search_query or ""
+        st.markdown(
+            f'<p class="result-bar"><strong>{len(resultats)} résultat{"s" if len(resultats)>1 else ""}</strong> pour « {q} »</p>',
+            unsafe_allow_html=True)
+
+        vus = vu_ids()
+        avoirs = avoir_ids()
+
+        for film in resultats:
+            fid   = film["id"]
+            titre = film.get("title", "Inconnu")
+            annee = film.get("release_date", "")[:4] or "—"
+            note  = film.get("vote_average", 0)
+            poster = film.get("poster_path")
+            overview = film.get("overview", "Pas de synopsis disponible.")[:160] + "…"
+
+            deja_vu    = str(fid) in vus
+            deja_avoir = str(fid) in avoirs
+
+            img_html = (
+                f'<img class="search-result-poster" src="https://image.tmdb.org/t/p/w185{poster}" alt="{titre}">'
+                if poster else '<div class="search-result-ph">🎬</div>'
+            )
+
+            vu_label    = "✅ Vu"    if deja_vu    else ""
+            avoir_label = "🔖 À voir" if deja_avoir else ""
+            badges = "".join(
+                f'<span class="platform-chip">{b}</span>'
+                for b in [vu_label, avoir_label] if b
+            )
+
+            st.markdown(f"""
+            <div class="search-result-card">
+                {img_html}
+                <div class="search-result-info">
+                    <p class="search-result-title">{titre}</p>
+                    <div class="film-meta">
+                        <span class="note-badge">★ {note:.1f}</span>
+                        <span class="annee-badge">{annee}</span>
+                        {badges}
+                    </div>
+                    <p style="color:#6a6060;font-size:.82rem;line-height:1.5;margin:6px 0 0;">{overview}</p>
+                </div>
+            </div>""", unsafe_allow_html=True)
+
+            # Actions inline sous chaque résultat
+            col_det, col_vu_btn, col_av_btn = st.columns([2, 1, 1])
+            with col_det:
+                if st.button("ℹ️ Voir les détails", key=f"sdet_{fid}", use_container_width=True):
+                    st.session_state.search_detail = fid
+                    st.rerun()
+            with col_vu_btn:
+                if deja_vu:
+                    if st.button("↩️ Retirer des vus", key=f"svu_ret_{fid}", use_container_width=True):
+                        vu_retirer(fid)
+                        st.rerun()
+                else:
+                    if st.button("👁 Marquer VU", key=f"svu_{fid}", use_container_width=True):
+                        vu_ajouter(fid, titre, annee)
+                        avoir_retirer(fid)
+                        st.rerun()
+            with col_av_btn:
+                if deja_avoir:
+                    if st.button("↩️ Retirer de À voir", key=f"sav_ret_{fid}", use_container_width=True):
+                        avoir_retirer(fid)
+                        st.rerun()
+                elif not deja_vu:
+                    if st.button("🔖 À VOIR", key=f"sav_{fid}", use_container_width=True):
+                        avoir_ajouter(fid, titre, annee)
+                        st.rerun()
+
+    elif chercher and not st.session_state.search_results:
+        st.markdown("""
+        <div style="background:#12111e;border:1px solid #22203a;border-radius:12px;
+             padding:2rem;text-align:center;max-width:480px;margin:2rem auto;">
+            <p style="font-family:'Playfair Display',serif;color:#e8e0d0;">Aucun film trouvé</p>
+            <p style="color:#4a4438;font-size:.9rem;">Essayez un autre titre ou vérifiez l'orthographe.</p>
+        </div>""", unsafe_allow_html=True)
+
+    elif not st.session_state.search_results:
+        st.markdown("""
+        <div style="background:linear-gradient(135deg,#12111e,#1a1826);border:1px solid #22203a;
+             border-radius:16px;padding:3rem;text-align:center;max-width:500px;margin:3rem auto;">
+            <div style="font-size:3rem;margin-bottom:1rem;">🔎</div>
+            <p style="font-family:'Playfair Display',serif;font-size:1.2rem;color:#e8e0d0;margin-bottom:.8rem;">
+                Chercher un titre précis</p>
+            <p style="color:#5a5048;font-size:.9rem;line-height:1.7;">
+                Recherchez n'importe quel film dans la base TMDB.<br>
+                Ajoutez-le à votre liste <strong style="color:#d4af37;">À Voir</strong> ou marquez-le comme <strong style="color:#d4af37;">Vu</strong>.</p>
+        </div>""", unsafe_allow_html=True)
+
+# ══════════════════════════════════════════════
+#  TAB 3 — HUMEUR DU SOIR
 # ══════════════════════════════════════════════
 with tab_humeur:
     st.markdown('<p style="font-family:\'Playfair Display\',serif;font-size:1.5rem;color:#e8e0d0;margin-bottom:.4rem;">Quelle est votre humeur ce soir ?</p>', unsafe_allow_html=True)
@@ -823,7 +952,90 @@ with tab_humeur:
             st.markdown(f'<div class="ai-response">{reponse.replace(chr(10), "<br>")}</div>', unsafe_allow_html=True)
 
 # ══════════════════════════════════════════════
-#  TAB 3 — FILMS VUS
+#  TAB 4 — À VOIR
+# ══════════════════════════════════════════════
+with tab_avoir:
+    st.markdown('<p style="font-family:\'Playfair Display\',serif;font-size:1.5rem;color:#e8e0d0;margin-bottom:1rem;">🔖 Ma liste À Voir</p>', unsafe_allow_html=True)
+
+    avoir_data = avoir_charger()
+
+    if not avoir_data:
+        st.markdown("""
+        <div style="background:#12111e;border:1px solid #22203a;border-radius:12px;
+             padding:2.5rem;text-align:center;max-width:500px;margin:2rem auto;">
+            <div style="font-size:3rem;margin-bottom:.8rem;">🔖</div>
+            <p style="font-family:'Playfair Display',serif;color:#e8e0d0;font-size:1.1rem;margin-bottom:.5rem;">Votre liste est vide</p>
+            <p style="color:#4a4438;font-size:.9rem;line-height:1.7;">
+                Ouvrez le détail d'un film ou utilisez la recherche par titre<br>
+                et cliquez sur <strong style="color:#d4af37;">🔖 À VOIR</strong> pour l'ajouter ici.</p>
+        </div>""", unsafe_allow_html=True)
+    else:
+        st.metric("Films dans votre liste", len(avoir_data))
+        st.divider()
+
+        # Grille 4 colonnes avec jaquettes si possible
+        ids_list = list(avoir_data.items())
+
+        # On affiche en grille 4 colonnes avec les détails TMDB
+        for i in range(0, len(ids_list), 4):
+            cols = st.columns(4, gap="medium")
+            for j, (fid, info) in enumerate(ids_list[i:i+4]):
+                with cols[j]:
+                    # Tenter de récupérer la jaquette depuis TMDB (cached)
+                    titre = info.get("titre", "?")
+                    annee = info.get("annee", "?")
+                    date_ajout = info.get("date", "—")
+
+                    # Récupération légère — uniquement poster + note
+                    @st.cache_data(ttl=86400, show_spinner=False)
+                    def get_poster_info(mid):
+                        try:
+                            url = f"https://api.themoviedb.org/3/movie/{mid}?api_key={TMDB_API_KEY}&language=fr-FR"
+                            r = requests.get(url, timeout=4)
+                            d = r.json()
+                            return d.get("poster_path"), d.get("vote_average", 0)
+                        except Exception:
+                            return None, 0
+
+                    poster_path, note = get_poster_info(int(fid))
+
+                    img_html = (
+                        f'<img class="film-poster" src="https://image.tmdb.org/t/p/w400{poster_path}" alt="{titre}" loading="lazy">'
+                        if poster_path else '<div class="film-poster-ph">🎬</div>'
+                    )
+
+                    st.markdown(f"""
+                    <div class="film-card">
+                        {img_html}
+                        <div class="film-info">
+                            <p class="film-title">{titre}</p>
+                            <div class="film-meta">
+                                <span class="note-badge">★ {note:.1f}</span>
+                                <span class="annee-badge">{annee}</span>
+                            </div>
+                            <p style="font-size:.7rem;color:#3a3428;margin-top:6px;">Ajouté le {date_ajout}</p>
+                        </div>
+                    </div>""", unsafe_allow_html=True)
+
+                    # Boutons sous la carte
+                    col_det2, col_vu2 = st.columns(2)
+                    with col_det2:
+                        if st.button("ℹ️", key=f"av_det_{fid}", use_container_width=True, help="Détails"):
+                            st.session_state.film_detail = int(fid)
+                            # Redirige vers l'onglet recherche pour voir le détail
+                            st.rerun()
+                    with col_vu2:
+                        if st.button("👁 VU", key=f"av_vu_{fid}", use_container_width=True):
+                            vu_ajouter(int(fid), titre, annee)
+                            avoir_retirer(int(fid))
+                            st.rerun()
+
+                    if st.button("🗑 Retirer", key=f"av_del_{fid}", use_container_width=True):
+                        avoir_retirer(int(fid))
+                        st.rerun()
+
+# ══════════════════════════════════════════════
+#  TAB 5 — FILMS VUS
 # ══════════════════════════════════════════════
 with tab_journal:
     st.markdown('<p style="font-family:\'Playfair Display\',serif;font-size:1.5rem;color:#e8e0d0;margin-bottom:1rem;">👁 Films vus</p>', unsafe_allow_html=True)
